@@ -72,7 +72,7 @@ class Related_Link_Categories extends WP_Widget {
             foreach ($link_ids as $id) {
                 array_push($ary_link_ids, $id->object_id);
             }
-            $query_format  = "SELECT DISTINCT t.slug FROM %sterm_relationships r ";
+            $query_format  = "SELECT DISTINCT t.term_id, t.slug FROM %sterm_relationships r ";
             $query_format .= "LEFT JOIN %sterms t ON r.term_taxonomy_id = t.term_id ";
             $query_format .= "LEFT JOIN %sterm_taxonomy x ON t.term_id = x.term_id ";
             $query_format .= "WHERE r.object_id IN (%s) AND t.slug != '%s' AND x.taxonomy = '%s'";
@@ -83,7 +83,7 @@ class Related_Link_Categories extends WP_Widget {
                 echo sprintf("<h3 class='%s'>%s</h3>\n", 'widget-title', $show_title);
                 echo sprintf("<ul class='%s'>\n", 'related_categories');
                 foreach ($slugs as $slug) {
-                    echo sprintf("<li><a href='%s'>%s</a></li>\n", $slug->slug, $slug->slug);
+                    echo sprintf("<li><a href='%s'>%s (%d)</a></li>\n", $slug->slug, $slug->slug, get_term($slug->term_id, 'link_category')->count);
                 }
                 echo "</ul>\n";
             }
