@@ -67,6 +67,7 @@ class Related_Link_Categories extends WP_Widget {
         $link_ids = $wpdb->get_results($query);
 
         // -- get slug of related categories from link ids
+        echo $before_widget;
         if ($link_ids) {
             $ary_link_ids = array();
             foreach ($link_ids as $id) {
@@ -80,7 +81,7 @@ class Related_Link_Categories extends WP_Widget {
             $query = sprintf($query_format, $wpdb->prefix, $wpdb->prefix, $wpdb->prefix, implode(',', $ary_link_ids), $categoryname, 'link_category');
             $slugs = $wpdb->get_results($query);
             if ($slugs) {
-                echo sprintf("<h3 class='%s'>%s</h3>\n", 'widget-title', $show_title);
+                echo sprintf("%s%s%s\n", $before_title, $show_title, $after_title);
                 echo sprintf("<ul class='%s'>\n", 'related_categories');
                 foreach ($slugs as $slug) {
                     echo sprintf("<li><a href='%s'>%s (%d)</a></li>\n", $slug->slug, $slug->slug, get_term($slug->term_id, 'link_category')->count);
@@ -88,6 +89,7 @@ class Related_Link_Categories extends WP_Widget {
                 echo "</ul>\n";
             }
         }
+        echo $after_widget;
     }
 }
 
