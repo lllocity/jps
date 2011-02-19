@@ -1,0 +1,55 @@
+server {
+    listen  80;
+    server_name localhost;
+    access_log  /var/www/jps/logs/access.log;
+    error_log   /var/www/jps/logs/error.log notice;
+    root /var/www/jps/public_html;
+    index index.html index.htm index.php;
+    # rewrite_log on;
+
+    location ~ \.php$ {
+        include /etc/nginx/fastcgi_params;
+        fastcgi_pass  127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME /var/www/jps/public_html$fastcgi_script_name;
+    }
+
+    # -- Basic Authentication
+    location ~ /wp-admin(.+\.php)$ {
+        auth_basic            "Restricted";
+        auth_basic_user_file  /var/www/jps/.htpasswd;
+
+        include /etc/nginx/fastcgi_params;
+        fastcgi_pass  127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME /var/www/jps/public_html$fastcgi_script_name;
+    }
+
+    # -- Normal Page Permalink setting
+    location ~ /about {
+        if (!-e $request_filename) {
+            rewrite  ^(.*)$  /index.php?q=$1  last;
+            break;
+        }           
+    }
+
+    # -- Link Library Permalink setting
+    location ~ /directory {
+        if (!-e $request_filename) {
+            rewrite  ^/directory/(.*)/$  /index.php?pagename=directory&cat_name=$1  last;
+            rewrite  ^/directory/(.*)$  /index.php?pagename=directory&cat_name=$1  last;
+            break;
+        }           
+    }
+
+    # -- Deny Config Page
+    location = /wp-config.php {
+        deny all;
+    }
+
+    # -- Static files
+    location ~* ^.+.(jpg|jpeg|gif|png|css|js|flv|swf|ico|xml)$ {
+        access_log  off;
+        # expires 30d;
+    }
+}
