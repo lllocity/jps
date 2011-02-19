@@ -73,18 +73,20 @@ class Related_Link_Categories extends WP_Widget {
             foreach ($link_ids as $id) {
                 array_push($ary_link_ids, $id->object_id);
             }
-            $query_format  = "SELECT DISTINCT t.term_id, t.slug FROM %sterm_relationships r ";
+            $query_format  = "SELECT DISTINCT t.term_id, t.slug, t.name FROM %sterm_relationships r ";
             $query_format .= "LEFT JOIN %sterms t ON r.term_taxonomy_id = t.term_id ";
             $query_format .= "LEFT JOIN %sterm_taxonomy x ON t.term_id = x.term_id ";
-            $query_format .= "WHERE r.object_id IN (%s) AND t.slug != '%s' AND x.taxonomy = '%s'";
+            $query_format .= "WHERE r.object_id IN (%s) AND x.taxonomy = '%s'";
 
-            $query = sprintf($query_format, $wpdb->prefix, $wpdb->prefix, $wpdb->prefix, implode(',', $ary_link_ids), $categoryname, 'link_category');
+            $query = sprintf($query_format, $wpdb->prefix, $wpdb->prefix, $wpdb->prefix, implode(',', $ary_link_ids), 'link_category');
             $slugs = $wpdb->get_results($query);
             if ($slugs) {
                 echo sprintf("%s%s%s\n", $before_title, $show_title, $after_title);
                 echo sprintf("<ul class='%s'>\n", 'related_categories');
                 foreach ($slugs as $slug) {
-                    echo sprintf("<li><a href='%s'>%s (%d)</a></li>\n", $slug->slug, $slug->slug, get_term($slug->term_id, 'link_category')->count);
+                    if ($slug == $categoryname) continue;
+                    echo sprintf("<li><a href='%s'>%s (%d)</a></li>\n", 
+                        preg_replace("/$categoryname/", $slug->slug, $_SERVER['REQUEST_URI']), $slug->name, get_term($slug->term_id, 'link_category')->count);
                 }
                 echo "</ul>\n";
             }
