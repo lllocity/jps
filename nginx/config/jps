@@ -36,6 +36,7 @@ server {
     # -- Link Library Permalink setting
     location ~ /directory {
         if (!-e $request_filename) {
+            rewrite  ^/directory$  /index.php?q=$1  last;
             rewrite  ^/directory/(.*)/$  /index.php?pagename=directory&cat_name=$1  last;
             rewrite  ^/directory/(.*)$  /index.php?pagename=directory&cat_name=$1  last;
             break;
