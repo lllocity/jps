@@ -84,7 +84,7 @@ class Related_Link_Categories extends WP_Widget {
                 echo sprintf("%s%s%s\n", $before_title, $show_title, $after_title);
                 echo sprintf("<ul class='%s'>\n", 'related_categories');
                 foreach ($slugs as $slug) {
-                    if ($slug == $categoryname) continue;
+                    if ($slug->slug == $categoryname) continue;
                     echo sprintf("<li><a href='%s'>%s (%d)</a></li>\n", 
                         preg_replace("/$categoryname/", $slug->slug, $_SERVER['REQUEST_URI']), $slug->name, get_term($slug->term_id, 'link_category')->count);
                 }
