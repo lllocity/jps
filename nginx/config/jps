@@ -2,10 +2,10 @@ server {
     listen  80;
     server_name localhost;
     access_log  /var/www/jps/logs/access.log;
-    error_log   /var/www/jps/logs/error.log notice;
+    error_log   /var/www/jps/logs/error.log; #  notice;
     root /var/www/jps/public_html;
     index index.html index.htm index.php;
-    rewrite_log on;
+    # rewrite_log on;
 
     location ~ \.php$ {
         include /etc/nginx/fastcgi_params;
@@ -23,6 +23,10 @@ server {
         fastcgi_pass  127.0.0.1:9000;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME /var/www/jps/public_html$fastcgi_script_name;
+    }
+    location ~ /wp-admin.+.(jpg|jpeg|gif|png|css|js|flv|swf|ico|xml)$ {
+        auth_basic            "Restricted";
+        auth_basic_user_file  /var/www/jps/.htpasswd;
     }
 
     # -- Normal Page Permalink setting
@@ -51,6 +55,6 @@ server {
     # -- Static files
     location ~* ^.+.(jpg|jpeg|gif|png|css|js|flv|swf|ico|xml)$ {
         access_log  off;
-        # expires 30d;
+        expires 30d;
     }
 }
