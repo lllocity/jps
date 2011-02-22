@@ -14,21 +14,6 @@ server {
         fastcgi_param SCRIPT_FILENAME /var/www/jps/public_html$fastcgi_script_name;
     }
 
-    # -- Basic Authentication
-    location ~ /wp-admin(.+\.php)$ {
-        auth_basic            "Restricted";
-        auth_basic_user_file  /var/www/jps/.htpasswd;
-
-        include /etc/nginx/fastcgi_params;
-        fastcgi_pass  127.0.0.1:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME /var/www/jps/public_html$fastcgi_script_name;
-    }
-    location ~ /wp-admin.+.(jpg|jpeg|gif|png|css|js|flv|swf|ico|xml)$ {
-        auth_basic            "Restricted";
-        auth_basic_user_file  /var/www/jps/.htpasswd;
-    }
-
     # -- Normal Page Permalink setting
     location ~ /about {
         if (!-e $request_filename) {
