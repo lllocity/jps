@@ -1,0 +1,36 @@
+3683,3684c3683,3684
+< 		if (is_null($categoryname) && $_GET['searchll'] == '')
+< 			return '';
+---
+> 		if ($categorylist != "" || isset($_GET['cat_id']))
+> 			$linkquery .= " AND t.term_id in (" . $categorylist. ")";
+3730,3732d3729
+< 		if ($mode == 'search') 
+< 			$linkquery .= " AND t.term_id in (" . $categorylist. ")";
+< 		
+3768,3769d3764
+< 		} else if ($mode == 'search') {
+< 			$linkquery .= " LIMIT 0, " . $linksperpage;
+4162,4169d4156
+< 											// -- Show language flag from telephone
+< 											$zflags = explode(',', $linkitem['link_telephone']);
+< 											if (count($zflags) > 0) {
+< 												foreach ($zflags as $zflag) {
+< 													$output .= sprintf("<a hreflang='%s'></a> \n", strtolower($zflag));
+< 												}
+< 											}
+< 
+4426,4427d4412
+< 							elseif ($showonecatmode == 'HTMLGETPERM')
+< 								$output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $previouspagenumber . "' >" . __('Previous', 'link-library') . "</a>";
+4452,4453d4436
+< 								elseif ($showonecatmode == 'HTMLGETPERM')
+< 									$output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $counter . "' >" . $counter . "</a>";
+4484,4485d4466
+< 							elseif ($showonecatmode == 'HTMLGETPERM')
+< 								$output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $nextpagenumber . "' >" . __('Next', 'link-library') . "</a>";
+5548c5529
+< ?>
+---
+> ?>
+\ ファイル末尾に改行がありません
