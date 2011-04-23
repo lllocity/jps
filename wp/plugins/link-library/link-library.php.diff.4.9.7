@@ -1,0 +1,70 @@
+3473,3487d3472
+< // *** jps_patch
+<         global $wp_query;
+< 
+<         if ($jps_is_root = ($wp_query->query_vars['cat_name']) ? 0 : 1)
+<             $jps_query = 'SELECT tt.term_id FROM ' . $this->db_prefix() . 'term_taxonomy tt WHERE tt.taxonomy = "link_category" AND tt.parent = 0';
+<         else 
+<             $jps_query = 'SELECT tt.term_id FROM ' . $this->db_prefix() . 'term_taxonomy tt WHERE parent = (SELECT t.term_id FROM ' . $this->db_prefix() . 'terms t WHERE t.slug = "' . $wp_query->query_vars['cat_name'] . '")';
+< 
+<         $jps_term_ids = $wpdb->get_results($jps_query);
+<         $jps_term_ids_array = array();
+<         foreach ($jps_term_ids as $jps_v) {
+<             array_push($jps_term_ids_array, $jps_v->term_id);
+<         }
+< // ***/
+< 
+3543,3546d3527
+< // *** jps_patch
+<             $linkcatquery .= " AND tt.term_id in (" . ($jps_term_ids_array ? implode(',', $jps_term_ids_array) : 0) . ")";
+< // ***/
+< 
+3701,3703c3682
+< // *** jps_patch
+< 				// $output .= "<div>" . __('No categories found', 'link-library') . ".</div>";
+< // ***/
+---
+> 				$output .= "<div>" . __('No categories found', 'link-library') . ".</div>";
+3752,3758d3730
+< 
+< // *** jps_patch
+<         global $wp_query;
+< 
+<         $jps_is_root = ($wp_query->query_vars['cat_name'] || $_GET['searchll'] != "") ? 0 : 1;
+<         if ($jps_is_root) return;
+< // ***/
+3775,3777c3747
+< // *** jps_patch
+< 			// global $wp_query;
+< // ***/
+---
+> 			global $wp_query;
+4078,4092d4047
+< // *** jps_patch
+<                             $jps_hierarchy = array($linkitem['name']);
+< 
+<                             $jps_tmp = $linkitem['parent'];
+<                             while ($jps_tmp) {
+<                                 $jps_query  = 'SELECT tt.parent, t.name, t.slug FROM ' . $this->db_prefix() . 'term_taxonomy tt ';
+<                                 $jps_query .= 'LEFT JOIN ' . $this->db_prefix() . 'terms t ON tt.term_id = t.term_id WHERE tt.term_id = ' . $jps_tmp;
+<                             
+<                                 $jps_row = $wpdb->get_row($jps_query);
+<                                 array_push($jps_hierarchy, "<a href='/directory/$jps_row->slug'>$jps_row->name</a>");
+< 
+<                                 $jps_tmp = $jps_row->parent;
+<                             }
+<                             $jps_hierarchy = array_reverse($jps_hierarchy);
+< 
+4094,4098c4049
+<                             {
+< 								// $catlink .= $linkitem['name'];
+<                                 $catlink .= implode(' > ', $jps_hierarchy);   
+<                             }
+< // ***/
+---
+> 								$catlink .= $linkitem['name'];
+5824c5775
+< ?>
+---
+> ?>
+\ ファイル末尾に改行がありません
