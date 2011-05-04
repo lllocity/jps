@@ -1,154 +1,199 @@
---- /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php	2011-04-25 23:19:32.311596000 +0900
-+++ /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php.orig	2011-04-23 16:54:35.218161992 +0900
-@@ -3468,25 +3468,10 @@
+--- /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php.orig	2011-05-05 00:31:46.636894942 +0900
++++ /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php	2011-05-05 00:45:16.536894933 +0900
+@@ -3468,10 +3468,25 @@
                                     $debugmode = false, $pagination = false, $linksperpage = 5, $showcatlinkcount = false, $showonecatmode = 'AJAX',
                                     $cattargetaddress = '', $rewritepage = '', $showinvisible = false) {
  
                  global $wpdb;
  
--// *** jps_patch
--        global $wp_query;
--
--        if ($jps_is_root = ($wp_query->query_vars['cat_name']) ? 0 : 1)
--            $jps_query = 'SELECT tt.term_id FROM ' . $this->db_prefix() . 'term_taxonomy tt WHERE tt.taxonomy = "link_category" AND tt.parent = 0';
--        else 
--            $jps_query = 'SELECT tt.term_id FROM ' . $this->db_prefix() . 'term_taxonomy tt WHERE parent = (SELECT t.term_id FROM ' . $this->db_prefix() . 'terms t WHERE t.slug = "' . $wp_query->query_vars['cat_name'] . '")';
--
--        $jps_term_ids = $wpdb->get_results($jps_query);
--        $jps_term_ids_array = array();
--        foreach ($jps_term_ids as $jps_v) {
--            array_push($jps_term_ids_array, $jps_v->term_id);
--        }
--// ***/
--
++// *** jps_patch
++        global $wp_query;
++
++        if ($jps_is_root = ($wp_query->query_vars['cat_name']) ? 0 : 1)
++            $jps_query = 'SELECT tt.term_id FROM ' . $this->db_prefix() . 'term_taxonomy tt WHERE tt.taxonomy = "link_category" AND tt.parent = 0';
++        else 
++            $jps_query = 'SELECT tt.term_id FROM ' . $this->db_prefix() . 'term_taxonomy tt WHERE parent = (SELECT t.term_id FROM ' . $this->db_prefix() . 'terms t WHERE t.slug = "' . $wp_query->query_vars['cat_name'] . '")';
++
++        $jps_term_ids = $wpdb->get_results($jps_query);
++        $jps_term_ids_array = array();
++        foreach ($jps_term_ids as $jps_v) {
++            array_push($jps_term_ids_array, $jps_v->term_id);
++        }
++// ***/
++
                  $output = '';
  
                  if (!isset($_GET['searchll']))
                  {
                          $countcat = 0;
-@@ -3538,14 +3523,10 @@
+@@ -3523,10 +3538,14 @@
                                  $linkcatquery .= " AND t.term_id in (" . $categorylist. ")";
  
                          if ($excludecategorylist != "")
                                  $linkcatquery .= " AND t.term_id not in (" . $excludecategorylist . ")";
  
--// *** jps_patch
--            $linkcatquery .= " AND tt.term_id in (" . ($jps_term_ids_array ? implode(',', $jps_term_ids_array) : 0) . ")";
--// ***/
--
++// *** jps_patch
++            $linkcatquery .= " AND tt.term_id in (" . ($jps_term_ids_array ? implode(',', $jps_term_ids_array) : 0) . ")";
++// ***/
++
                          $linkcatquery .= " GROUP BY t.name ";
  
                          if ($order == "name")
                                  $linkcatquery .= " ORDER by t.name " . $direction;
                          elseif ($order == "id")
-@@ -3696,13 +3677,11 @@
+@@ -3677,11 +3696,13 @@
                                          $output .= "<div class='contentLoading' id='contentLoading' style='display: none;'><img src='" . WP_PLUGIN_URL . "/link-library" . $loadingicon . "' alt='Loading data, please wait...'></div>\n";
                                  }
                          }
                          else
                          {
--// *** jps_patch
--                                // $output .= "<div>" . __('No categories found', 'link-library') . ".</div>";
--// ***/
-+                                $output .= "<div>" . __('No categories found', 'link-library') . ".</div>";
+-                                $output .= "<div>" . __('No categories found', 'link-library') . ".</div>";
++// *** jps_patch
++                                // $output .= "<div>" . __('No categories found', 'link-library') . ".</div>";
++// ***/
                          }
  
                          $output .= "\n<!-- End of Link Library Categories Output -->\n\n";
                  }
                  return $output;
-@@ -3747,17 +3726,10 @@
+@@ -3726,10 +3747,17 @@
                                                                          $beforeemail = '', $afteremail = '', $emaillabel = '', $beforelinkhits = '', $afterlinkhits = '', $emailcommand = '',
                                                                          $sourceimage = '', $sourcename = '', $thumbshotscid = '', $maxlinks = '', $beforelinkrating = '', $afterlinkrating = '',
                                                                          $showlargedescription = false, $beforelargedescription = '', $afterlargedescription = '', $featuredfirst = false) {
  
                  global $wpdb;
--
--// *** jps_patch
--        global $wp_query;
--
--        $jps_is_root = ($wp_query->query_vars['cat_name'] || $_GET['searchll'] != "") ? 0 : 1;
--        if ($jps_is_root) return;
--// ***/
++
++// *** jps_patch
++        global $wp_query;
++
++        $jps_is_root = ($wp_query->query_vars['cat_name'] || $_GET['searchll'] != "") ? 0 : 1;
++        if ($jps_is_root) return;
++// ***/
                  
                  $output = "\n<!-- Beginning of Link Library Output -->\n\n";
  
                  $currentcategory = 1;
  
-@@ -3770,13 +3742,11 @@
+@@ -3742,11 +3770,13 @@
                          $categorylist = $_GET['cat_id'];
                          $AJAXcatid = $categorylist;
                  }
                  elseif ($showonecatonly && $showonecatmode == 'HTMLGETPERM' && $_GET['searchll'] == "")
                  {
--// *** jps_patch
--                        // global $wp_query;
--// ***/
-+                        global $wp_query;
+-                        global $wp_query;
++// *** jps_patch
++                        // global $wp_query;
++// ***/
  
                          $categoryname = $wp_query->query_vars['cat_name'];
                          $AJAXcatid = $categoryname;
                  }
                  elseif ($showonecatonly && $AJAXcatid == '' && $defaultsinglecat != '' && $_GET['searchll'] == "")
-@@ -4073,31 +4043,12 @@
+@@ -4043,12 +4073,31 @@
                                                                          $linkitem['name'] = $this->ll_highlight_phrase($linkitem['name'], $searchterm, '<span class="highlight_word">', '</span>'); 
                                                                  }
  
                                                          $catlink = '<div class="' . $catnameoutput . '">';
  
--// *** jps_patch
--                            $jps_hierarchy = array($linkitem['name']);
--
--                            $jps_tmp = $linkitem['parent'];
--                            while ($jps_tmp) {
--                                $jps_query  = 'SELECT tt.parent, t.name, t.slug FROM ' . $this->db_prefix() . 'term_taxonomy tt ';
--                                $jps_query .= 'LEFT JOIN ' . $this->db_prefix() . 'terms t ON tt.term_id = t.term_id WHERE tt.term_id = ' . $jps_tmp;
--                            
--                                $jps_row = $wpdb->get_row($jps_query);
--                                array_push($jps_hierarchy, "<a href='/directory/$jps_row->slug'>$jps_row->name</a>");
--
--                                $jps_tmp = $jps_row->parent;
--                            }
--                            $jps_hierarchy = array_reverse($jps_hierarchy);
--
++// *** jps_patch
++                            $jps_hierarchy = array($linkitem['name']);
++
++                            $jps_tmp = $linkitem['parent'];
++                            while ($jps_tmp) {
++                                $jps_query  = 'SELECT tt.parent, t.name, t.slug FROM ' . $this->db_prefix() . 'term_taxonomy tt ';
++                                $jps_query .= 'LEFT JOIN ' . $this->db_prefix() . 'terms t ON tt.term_id = t.term_id WHERE tt.term_id = ' . $jps_tmp;
++                            
++                                $jps_row = $wpdb->get_row($jps_query);
++                                array_push($jps_hierarchy, "<a href='/directory/$jps_row->slug'>$jps_row->name</a>");
++
++                                $jps_tmp = $jps_row->parent;
++                            }
++                            $jps_hierarchy = array_reverse($jps_hierarchy);
++
                                                          if ($catdescpos == "right" || $catdescpos == '')
--                            {
--                                                                // $catlink .= $linkitem['name'];
--                                $catlink .= implode(' > ', $jps_hierarchy);   
--                            }
--// ***/
-+                                                                $catlink .= $linkitem['name'];
+-                                                                $catlink .= $linkitem['name'];
++                            {
++                                                                // $catlink .= $linkitem['name'];
++                                $catlink .= implode(' > ', $jps_hierarchy);   
++                            }
++// ***/
  
                                                          if ($showcategorydesclinks)
                                                          {
                                                                  $catlink .= "<span class='linklistcatnamedesc'>";
                                                                  $linkitem['description'] = str_replace("[", "<", $linkitem['description']);
-@@ -4366,20 +4317,10 @@
+@@ -4317,10 +4366,20 @@
  
                                                                                          if ($showupdated && $linkitem['recently_updated']) {
                                                                                                  $output .= get_option('links_recently_updated_append');
                                                                                          }
  
--// *** jps_patch
--                                            // -- Show language flag from telephone
--                                            $jps_flags = explode(',', $linkitem['link_telephone']);
--                                            if (count($jps_flags) > 0) {
--                                                foreach ($jps_flags as $jps_v) {
--                                                    $output .= sprintf(" <a hreflang='%s'>&nbsp;</a>\n", strtolower($jps_v));
--                                                }
--                                            }
--// ***/
--
++// *** jps_patch
++                                            // -- Show language flag from telephone
++                                            $jps_flags = explode(',', $linkitem['link_telephone']);
++                                            if (count($jps_flags) > 0) {
++                                                foreach ($jps_flags as $jps_v) {
++                                                    $output .= sprintf(" <a hreflang='%s'>&nbsp;</a>\n", strtolower($jps_v));
++                                                }
++                                            }
++// ***/
++
                                                                                          $output .= stripslashes($afterlink);
                                                                                  }
  
                                                                                  break;
  
-@@ -5829,6 +5770,6 @@
+@@ -4567,10 +4626,14 @@
+                                                 {
+                                                         if ($showonecatmode == 'AJAX' || $showonecatmode == '')
+                                                                 $output .= "<a href='#' onClick=\"showLinkCat('" . $AJAXcatid . "', '" . $settings . "', " . $previouspagenumber . ");return false;\" >" . __('Previous', 'link-library') . "</a>";
+                                                         elseif ($showonecatmode == 'HTMLGET')
+                                                                 $output .= "<a href='?page_id=" . get_the_ID() . "&linkresultpage=" . $previouspagenumber . "&cat_id=" . $AJAXcatid . "' >" . __('Previous', 'link-library') . "</a>";
++// *** jps_patch
++                            elseif ($showonecatmode == 'HTMLGETPERM')
++                                $output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $previouspagenumber . "' >" . __('Previous', 'link-library') . "</a>";
++// *** /
+                                                 }
+ 
+                                                 $output .= "</span>";
+                                         }
+                                         else
+@@ -4591,10 +4654,14 @@
+                                                         {
+                                                                 if ($showonecatmode == 'AJAX' || $showonecatmode == '')
+                                                                         $output .= "<a href='#' onClick=\"showLinkCat('" . $AJAXcatid . "', '" . $settings . "', " . $counter . ");return false;\" >" . $counter . "</a>";
+                                                                 elseif ($showonecatmode == 'HTMLGET')
+                                                                         $output .= "<a href='?page_id=" . get_the_ID() . "&linkresultpage=" . $counter . "&cat_id=" . $AJAXcatid . "' >" . $counter . "</a>";
++// *** jps_patch
++                                elseif ($showonecatmode == 'HTMLGETPERM')
++                                    $output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $counter . "' >" . $counter . "</a>";
++// *** /
+                                                         }
+ 
+                                                         $output .= "</a></span>";
+                                                 }
+ 
+@@ -4621,10 +4688,14 @@
+                                                 {
+                                                         if ($showonecatmode == 'AJAX' || $showonecatmode == '')
+                                                                 $output .= "<a href='#' onClick=\"showLinkCat('" . $AJAXcatid . "', '" . $settings . "', " . $nextpagenumber . ");return false;\" >" . __('Next', 'link-library') . "</a>";
+                                                         elseif ($showonecatmode == 'HTMLGET')
+                                                                 $output .= "<a href='?page_id=" . get_the_ID() . "&linkresultpage=" . $nextpagenumber . "&cat_id=" . $AJAXcatid . "' >" . __('Next', 'link-library') . "</a>";
++// *** jps_patch
++                            elseif ($showonecatmode == 'HTMLGETPERM')
++                                $output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $nextpagenumber . "' >" . __('Next', 'link-library') . "</a>";
++// *** /
+                                                 }
+ 
+                                                 $output .= "</span>";
+                                         }
+                                         else
+@@ -5770,6 +5841,6 @@
  
  }
  
  $my_link_library_plugin = new link_library_plugin();
  
 -?>
-+?>
 \ ファイル末尾に改行がありません
++?>
