@@ -14,6 +14,8 @@ use Lllo::Database;
 
 # -- Constant
 my $PJ_CODE : Constant('jps');
+my $LINK_TARGET : Constant('_blank');
+my $USER_NAME : Constant('8qzbwi');
 
 # -- Get options
 my $file;
@@ -35,37 +37,41 @@ open(my $fh, '<', $file) or die "Failed to open. $file";
 $db->begin_work;
 while (<$fh>) {
     chomp $_;
-    next unless $csv->parse($_);
-    my @fields = $csv->fields;
-    next unless @fields > 3;
 
-    my $site_name = $fields[1];
-    my $url = $fields[2];
-    my $lang_code = join(',', Lllo::Utils::langConvStr2Code($fields[3]));
-    my $ctgr = '/Non_Categorized';  # TODO 
-    my $desc = undef;               # TODO
+    unless ($csv->parse($_)) {
+        print "CSVの行パースに失敗しました\n";
+        print "$_\n";
+        next;
+    }
+
+    my @fields = $csv->fields;
+
+    unless (@fields > 3) {
+        print "フィールド数が少ない\n";
+        print "$_\n";
+        next;
+    }
+
+    my $link_name        = $fields[1];
+    my $link_url         = $fields[2];
+    my $link_description = '';  # TODO
+    my $lang_code        = join(',', Lllo::Utils::langConvStr2Code($fields[3]));
+    my $term_taxonomy_id = 16;  # TODO
+
     my ($query, @bind_values);
 
-    my $exists = $db->query('SELECT SiteId FROM SITE WHERE Url = ?', $url)->hash;
-    if ($exists) {
-        # -- Update
-        @bind_values = ($site_name, $url, $lang_code, $desc, $ctgr, time(), $exists->{'siteid'});
-        $query = 'UPDATE SITE SET SiteName = ?, Url = ?, Language = ?, Description = ? ,Category = ?, UpdatedAt = ? WHERE SiteId = ?';
-    } else {
-        # -- Insert
-        @bind_values = (undef, $site_name, $url, $lang_code, $desc, $ctgr, time()); 
-        $query = 'INSERT INTO SITE VALUES (?,?,?,?,?,?,?)';
-    }
+    @bind_values = ($link_url, $link_name, $LINK_TARGET, $link_description);
+    $query = "INSERT INTO jps_links (link_url,link_name,link_target,link_description,link_updated,link_notes) VALUES (?,?,?,?,NOW(),'')";
     $db->query($query, @bind_values) or die $db->error;
 
-    # -- If defined referer, replace into EXTRA table.
-    if (defined $fields[4]) {
-        my $referer = $fields[4];
-        my $id = $db->query('SELECT LAST_INSERT_ID() as last_insert')->hash;
+    @bind_values = ($lang_code, $USER_NAME);
+    $query = "INSERT INTO jps_links_extrainfo (link_id,link_telephone,link_submitter,link_textfield,link_no_follow) VALUES (last_insert_id(),?,?,'','')";
+    $db->query($query, @bind_values) or die $db->error;
 
-        @bind_values = (($exists) ? $exists->{'siteid'} : $id->{'last_insert'}, $referer);
-        $db->query('REPLACE INTO EXTRA VALUES (?,?)', @bind_values) or die $db->error;
-    }
+    @bind_values = ($term_taxonomy_id);
+    $query = "INSERT INTO jps_term_relationships (object_id,term_taxonomy_id) VALUES (last_insert_id(),?)";
+    $db->query($query, @bind_values) or die $db->error;
+
 }
 $db->commit;
 close($fh);
