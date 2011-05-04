@@ -45,18 +45,23 @@ while (<$fh>) {
     }
 
     my @fields = $csv->fields;
-
     unless (@fields > 3) {
-        print "フィールド数が少ない\n";
+        print "フィールド数が足りません\n";
         print "$_\n";
         next;
     }
 
     my $link_name        = $fields[1];
+    unless ($link_name) {
+        print "リンク名がありません\n";
+        print "$_\n";
+        next;
+    }
+
     my $link_url         = $fields[2];
     my $link_description = '';  # TODO
     my $lang_code        = join(',', Lllo::Utils::langConvStr2Code($fields[3]));
-    my $term_taxonomy_id = 16;  # TODO
+    my $term_taxonomy_id = 2;   # TODO
 
     my ($query, @bind_values);
 
