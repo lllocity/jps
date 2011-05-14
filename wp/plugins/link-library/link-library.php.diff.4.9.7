@@ -1,5 +1,5 @@
 --- /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php.orig	2011-05-05 00:31:46.636894942 +0900
-+++ /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php	2011-05-05 00:45:16.536894933 +0900
++++ /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php	2011-05-14 09:33:05.330657014 +0900
 @@ -3468,10 +3468,25 @@
                                     $debugmode = false, $pagination = false, $linksperpage = 5, $showcatlinkcount = false, $showonecatmode = 'AJAX',
                                     $cattargetaddress = '', $rewritepage = '', $showinvisible = false) {
@@ -151,7 +151,7 @@
                                                                  $output .= "<a href='?page_id=" . get_the_ID() . "&linkresultpage=" . $previouspagenumber . "&cat_id=" . $AJAXcatid . "' >" . __('Previous', 'link-library') . "</a>";
 +// *** jps_patch
 +                            elseif ($showonecatmode == 'HTMLGETPERM')
-+                                $output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $previouspagenumber . "' >" . __('Previous', 'link-library') . "</a>";
++                                $output .= "<a href='?" . "linkresultpage=" . $previouspagenumber . "' >" . __('Previous', 'link-library') . "</a>";
 +// *** /
                                                  }
  
@@ -166,7 +166,7 @@
                                                                          $output .= "<a href='?page_id=" . get_the_ID() . "&linkresultpage=" . $counter . "&cat_id=" . $AJAXcatid . "' >" . $counter . "</a>";
 +// *** jps_patch
 +                                elseif ($showonecatmode == 'HTMLGETPERM')
-+                                    $output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $counter . "' >" . $counter . "</a>";
++                                    $output .= "<a href='?" . "linkresultpage=" . $counter . "' >" . $counter . "</a>";
 +// *** /
                                                          }
  
@@ -181,7 +181,7 @@
                                                                  $output .= "<a href='?page_id=" . get_the_ID() . "&linkresultpage=" . $nextpagenumber . "&cat_id=" . $AJAXcatid . "' >" . __('Next', 'link-library') . "</a>";
 +// *** jps_patch
 +                            elseif ($showonecatmode == 'HTMLGETPERM')
-+                                $output .= "<a href='" . $_SERVER['REQUEST_URI'] . "&linkresultpage=" . $nextpagenumber . "' >" . __('Next', 'link-library') . "</a>";
++                                $output .= "<a href='?" . "linkresultpage=" . $nextpagenumber . "' >" . __('Next', 'link-library') . "</a>";
 +// *** /
                                                  }
  
