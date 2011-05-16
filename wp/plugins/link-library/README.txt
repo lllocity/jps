@@ -1,1 +1,1 @@
-$ diff /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php.orig /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php --expand-tabs --strip-trailing-cr --unified 5 > /home/yyoshino/git/jps/wp/plugins/link-library/link-library.php.diff.x.y.z
+$ diff /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php.orig /var/www/jps/public_html/wp-content/plugins/link-library/link-library.php --expand-tabs --strip-trailing-cr --unified=5 > /home/yyoshino/git/jps/wp/plugins/link-library/link-library.php.diff.x.y.z
