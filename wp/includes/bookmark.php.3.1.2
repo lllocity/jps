@@ -1,0 +1,20 @@
+--- /home/yyoshino/zbak/wordpress/bookmark.php.orig	2011-05-18 00:14:57.175018546 +0900
++++ /var/www/jps/public_html/wp-admin/includes/bookmark.php	2011-05-18 00:18:09.767018387 +0900
+@@ -184,10 +184,17 @@
+         // Make sure we set a valid category
+         if ( ! isset( $link_category ) || 0 == count( $link_category ) || !is_array( $link_category ) ) {
+                 $link_category = array( get_option( 'default_link_category' ) );
+         }
+ 
++// /*** jps_patch
++    $jps_p = parse_url($link_url);
++    if ($wpdb->get_var("SELECT COUNT(*) AS c FROM $wpdb->links WHERE link_url LIKE '" . $jps_p['scheme'] . "://" . $jps_p['host'] . "%'")) {
++        wp_die("Duplicate HostName($link_url)");
++    }
++// ***/
++
+         if ( $update ) {
+                 if ( false === $wpdb->update( $wpdb->links, compact('link_url', 'link_name', 'link_image', 'link_target', 'link_description', 'link_visible', 'link_rating', 'link_rel', 'link_notes', 'link_rss'), compact('link_id') ) ) {
+                         if ( $wp_error )
+                                 return new WP_Error( 'db_update_error', __( 'Could not update link in the database' ), $wpdb->last_error );
+                         else

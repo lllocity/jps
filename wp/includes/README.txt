@@ -1,0 +1,1 @@
+$ diff /home/yyoshino/zbak/wordpress/bookmark.php.orig /var/www/jps/public_html/wp-admin/includes/bookmark.php --expand-tabs --strip-trailing-cr --unified=5 > /home/yyoshino/git/jps/wp/includes/bookmark.php.x.y.z
