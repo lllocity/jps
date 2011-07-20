@@ -1,0 +1,16 @@
+189a190,196
+> // /*** jps_patch
+>         $jps_p = parse_url($link_url);
+>         if ($wpdb->get_var("SELECT COUNT(*) AS c FROM $wpdb->links WHERE link_id != " . $link_id . " AND link_url LIKE '" . $jps_p['scheme'] . "://" . $jps_p['host'] . "%'")) {
+>             wp_die("Duplicate HostName($link_url)");
+>         }
+> // ***/
+> 
+196a204,210
+> // /*** jps_patch
+>         $jps_p = parse_url($link_url);
+>         if ($wpdb->get_var("SELECT COUNT(*) AS c FROM $wpdb->links WHERE link_url LIKE '" . $jps_p['scheme'] . "://" . $jps_p['host'] . "%'")) {
+>             wp_die("Duplicate HostName($link_url)");
+>         }
+> // ***/
+> 
